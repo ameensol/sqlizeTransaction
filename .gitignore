@@ -1,0 +1,10 @@
+node_modules/
+config.json
+
+*~
+.*~
+.*.~
+*.swp
+*.swo
+.*.swp
+.*.swo
