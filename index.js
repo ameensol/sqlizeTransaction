@@ -37,6 +37,7 @@ var db = require('./sqlize')(function (err, db) {
           console.log('Started transaction for list' + count)
           return sequelize.Promise.map(members, function (member) {
             return Tweeter.findOrCreate({where: {id: member.id}, defaults: member}, {transaction: t})
+            // return Tweeter.upsert(member)
           })
         })
       }
@@ -45,6 +46,7 @@ var db = require('./sqlize')(function (err, db) {
         console.log('Started noTransaction for list' + count)
         return sequelize.Promise.map(members, function (member) {
           return Tweeter.findOrCreate({where: {id: member.id}, defaults: member})
+          // return Tweeter.upsert(member)
         })
       }
 
@@ -54,7 +56,10 @@ var db = require('./sqlize')(function (err, db) {
         listCount ++
         var count = listCount
         var start = new Date().getTime()
-        noTransaction(count, members).then(function () {
+        /*
+         * Below is the main call of this script.
+         */
+        transaction(count, members).then(function () {
           var finish = new Date().getTime()
           var elapsed = (finish - start) / 1000
           console.log(elapsed + 's: Finished saving members of list' + count + '.')
